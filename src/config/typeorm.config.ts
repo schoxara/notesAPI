@@ -10,7 +10,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
     return {
       type: 'postgres',
-      host: process.env.DB_HOST,
+      host: process.env.DATABASE_URL,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       database: process.env.DB_NAME,
@@ -34,7 +34,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST,
+  host: process.env.DATABASE_URL,
   port: parseInt(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   database: process.env.DB_NAME,
