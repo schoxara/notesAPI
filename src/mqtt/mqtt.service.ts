@@ -9,7 +9,6 @@ export class MqttService implements OnModuleInit {
   topic = "notes";
 
   onModuleInit() {
-    console.log("EVO MEEE");
     const host = process.env.MQTT_HOST;
     const port = process.env.MQTT_PORT;
 
