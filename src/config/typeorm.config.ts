@@ -7,10 +7,12 @@ import {
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
   inject: [ConfigService],
-  useFactory: async (): Promise<TypeOrmModuleOptions> => {
+  useFactory: async (
+    configService: ConfigService
+  ): Promise<TypeOrmModuleOptions> => {
     return {
       type: "postgres",
-      host: process.env.DB_HOST,
+      host: configService.get("DATABASE_URL"),
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       database: process.env.DB_NAME,
@@ -25,10 +27,12 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
         charset: "utf8mb4_unicode_ci",
       },
       synchronize: false,
-      url: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      url: configService.get("DATABASE_URL"),
+      ssl: configService.get("DATABASE_URL")
+        ? {
+            rejectUnauthorized: false,
+          }
+        : null,
       logging: true,
     };
   },
@@ -51,8 +55,10 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   },
   synchronize: false,
   url: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: process.env.DATABASE_URL
+    ? {
+        rejectUnauthorized: false,
+      }
+    : null,
   logging: true,
 };
