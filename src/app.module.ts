@@ -12,6 +12,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MulterModule } from "@nestjs/platform-express";
 import { NotesModule } from "./modules/notes/notes.module";
+import { MqttModule } from "./mqtt/mqtt.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -21,6 +22,7 @@ import { NotesModule } from "./modules/notes/notes.module";
     NotesModule,
     UserModule,
     AuthModule,
+    MqttModule,
   ],
   controllers: [],
   providers: [],

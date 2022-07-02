@@ -17,6 +17,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       password: process.env.DB_PASSWORD,
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
+      keepConnectionAlive: true,
       cli: {
         migrationsDir: __dirname + '/../database/migrations',
       },
@@ -24,6 +25,8 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
         charset: 'utf8mb4_unicode_ci',
       },
       synchronize: false,
+      url: process.env.DB_HOST,
+      ssl: { rejectUnauthorized: false },
       logging: true,
     };
   },
