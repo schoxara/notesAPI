@@ -12,7 +12,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   ): Promise<TypeOrmModuleOptions> => {
     return {
       type: "postgres",
-      host: configService.get("DATABASE_URL"),
+      host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       database: process.env.DB_NAME,
