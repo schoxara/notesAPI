@@ -26,7 +26,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       },
       synchronize: false,
       url: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: process.env.DATABASE_URL ? true : false,
       logging: true,
     };
   },
@@ -49,6 +49,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   },
   synchronize: false,
   url: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ssl: process.env.DATABASE_URL ? true : false,
   logging: true,
 };
