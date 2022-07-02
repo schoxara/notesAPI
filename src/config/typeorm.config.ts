@@ -25,7 +25,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
         charset: 'utf8mb4_unicode_ci',
       },
       synchronize: false,
-      url: process.env.DB_HOST,
+      url: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
       logging: true,
     };
@@ -48,5 +48,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     charset: 'utf8mb4_unicode_ci',
   },
   synchronize: false,
+  url: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
   logging: true,
 };
