@@ -45,6 +45,15 @@ export class NotesController {
     return this.notesService.getNotesById(id);
   }
 
+  @Get("/personal/mine")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: Notes })
+  @ApiNotFoundResponse({ description: "Entity with given Id not found" })
+  async getMin(@Request() req) {
+    return this.notesService.getMineNotes(req.user.id);
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post("/create")

@@ -39,6 +39,18 @@ export class NotesService {
     });
   }
 
+  async getMineNotes(userId: string): Promise<Notes[]> {
+    return Notes.find({
+      join: {
+        alias: "notes",
+        leftJoinAndSelect: buildLeftJoinsConfig(Notes, "notes", {}),
+      },
+      where: {
+        user: { id: userId },
+      },
+    });
+  }
+
   async getAllNotes(): Promise<Notes[] | undefined> {
     return Notes.find();
   }
