@@ -39,7 +39,7 @@ export class MqttService implements OnModuleInit {
 
   sendMessageToTopic(data: SendNotifiationDTO) {
     return this.mqttClient.publish(this.topic, data.message, {
-      qos: 0,
+      qos: 1,
       retain: true,
     });
   }

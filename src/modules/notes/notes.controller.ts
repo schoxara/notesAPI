@@ -16,6 +16,8 @@ import {
   ApiOkResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { SendNotifiationDTO } from "src/mqtt/dto/sendNotification.dto";
+import { MqttService } from "src/mqtt/mqtt.service";
 import { SETTINGS } from "../../app.utils";
 import { UuidPipe } from "../../common/utils/UuidPipe";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -26,7 +28,10 @@ import { NotesService } from "./notes.service";
 @ApiTags("Notes")
 @Controller("notes")
 export class NotesController {
-  constructor(private notesService: NotesService) {}
+  constructor(
+    private notesService: NotesService,
+    private mqttService: MqttService,
+  ) { }
 
   @Get()
   @ApiBearerAuth()
@@ -67,7 +72,12 @@ export class NotesController {
     createDto: CreateNoteDto,
     @Request() req
   ): Promise<Notes> {
-    return await this.notesService.createNote(createDto, req.user.id);
+
+    const a = await this.notesService.createNote(createDto, req.user.id);
+    const data = new SendNotifiationDTO();
+    data.message = "Refresh";
+    this.mqttService.sendMessageToTopic(data);
+    return a;
   }
 
   @Patch("/:id")
