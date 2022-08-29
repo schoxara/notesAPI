@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -38,7 +40,7 @@ export class NotesController {
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: Notes })
   async getAllNotes() {
-    return this.notesService.getAllNotes();
+    return await this.notesService.getAllNotes();
   }
 
   @Get("/:id")
@@ -47,7 +49,8 @@ export class NotesController {
   @ApiOkResponse({ type: Notes })
   @ApiNotFoundResponse({ description: "Entity with given Id not found" })
   async getById(@Param("id", UuidPipe) id: string) {
-    return this.notesService.getNotesById(id);
+    const note = await this.notesService.getNotesById(id);
+    return note ? note : new BadRequestException("Not Found")
   }
 
   @Get("/personal/mine")
@@ -56,7 +59,7 @@ export class NotesController {
   @ApiOkResponse({ type: Notes })
   @ApiNotFoundResponse({ description: "Entity with given Id not found" })
   async getMin(@Request() req) {
-    return this.notesService.getMineNotes(req.user.id);
+    return await this.notesService.getMineNotes(req.user.id);
   }
 
   @ApiBearerAuth()
@@ -92,5 +95,19 @@ export class NotesController {
     @Request() req
   ) {
     return this.notesService.updateNote(id, updateDto, req.user.id);
+  }
+
+  @Delete("/:id")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: Notes })
+  @ApiNotFoundResponse({ description: "Entity with given Id not found" })
+  async deleteById(
+    @Param("id", UuidPipe) id: string,
+    @Request() req
+  ) {
+    const note = await this.notesService.deleteNote(id, req.user.id);
+    return note ? note : new BadRequestException("Not Found")
+
   }
 }

@@ -29,7 +29,7 @@ export class NotesService {
   }
 
   async getNotesById(noteId: string): Promise<Notes | undefined> {
-    return Notes.findOneOrFail(noteId, {
+    return await Notes.findOne(noteId, {
       join: {
         alias: "notes",
         leftJoinAndSelect: buildLeftJoinsConfig(Notes, "notes", {
@@ -65,6 +65,13 @@ export class NotesService {
       note.description = updateDto.description;
     }
     return await note.save();
+  }
+
+  async deleteNote(noteId: string, userId: string): Promise<Notes | undefined> {
+    const note = await this.getNotesById(noteId);
+    if (!note) return undefined;
+    this.validateNoteOwner(note, userId);
+    return await note.remove();
   }
 
   // private/untils functions
