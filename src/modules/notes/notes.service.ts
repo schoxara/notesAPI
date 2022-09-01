@@ -24,7 +24,6 @@ export class NotesService {
     note.description = dto.description;
 
     const saved = await note.save();
-    console.log(saved);
     return saved;
   }
 

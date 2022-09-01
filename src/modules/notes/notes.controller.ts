@@ -116,9 +116,9 @@ export class NotesController {
   ) {
     const note = await this.notesService.deleteNote(id, req.user.id);
     const res = note ? note as Notes : new BadRequestException("Not Found")
-    if (res && note.id && note.user) {
+    if (res && id && note.user) {
       this.refreshAllDevices();
-      this.refreshSpecificDevice(note.id, ACTION_TYPE.DELETE)
+      this.refreshSpecificDevice(id, ACTION_TYPE.DELETE)
     }
     return res;
 
@@ -131,7 +131,6 @@ export class NotesController {
   }
 
   private refreshSpecificDevice(noteId: string, message: ACTION_TYPE) {
-    console.log("NoteID: ", noteId);
     const data = new SendNotifiationDTO();
     data.message = message
     this.mqttService.sendRefreshToSpecificTopic(data, noteId);
