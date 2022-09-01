@@ -20,6 +20,6 @@ export class MqttController {
 
   @Post("notifications")
   sendNotification(@Payload() data: SendNotifiationDTO) {
-    this.mqttService.sendMessageToTopic(data);
+    this.mqttService.sendRefreshToAllDevices(data);
   }
 }

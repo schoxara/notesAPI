@@ -37,8 +37,15 @@ export class MqttService implements OnModuleInit {
     });
   }
 
-  sendMessageToTopic(data: SendNotifiationDTO) {
+  sendRefreshToAllDevices(data: SendNotifiationDTO) {
     return this.mqttClient.publish(this.topic, data.message, {
+      qos: 1,
+      retain: true,
+    });
+  }
+
+  sendRefreshToSpecificTopic(data: SendNotifiationDTO, updatedNoteId: string) {
+    return this.mqttClient.publish(`${this.topic}/${updatedNoteId}`, data.message, {
       qos: 1,
       retain: true,
     });

@@ -27,6 +27,13 @@ import { CreateNoteDto } from "./dto/createNote.dto";
 import { Notes } from "./notes.entity";
 import { NotesService } from "./notes.service";
 
+enum ACTION_TYPE {
+  DELETE = "Delete",
+  UPDATE = "Update",
+  REFRESH = "Refresh"
+}
+
+
 @ApiTags("Notes")
 @Controller("notes")
 export class NotesController {
@@ -76,11 +83,9 @@ export class NotesController {
     @Request() req
   ): Promise<Notes> {
 
-    const a = await this.notesService.createNote(createDto, req.user.id);
-    const data = new SendNotifiationDTO();
-    data.message = "Refresh";
-    this.mqttService.sendMessageToTopic(data);
-    return a;
+    const res = await this.notesService.createNote(createDto, req.user.id);
+    this.refreshAllDevices();
+    return res;
   }
 
   @Patch("/:id")
@@ -94,7 +99,10 @@ export class NotesController {
     updateDto: CreateNoteDto,
     @Request() req
   ) {
-    return this.notesService.updateNote(id, updateDto, req.user.id);
+    const res = this.notesService.updateNote(id, updateDto, req.user.id);
+    this.refreshAllDevices();
+    this.refreshSpecificDevice((await res).id, ACTION_TYPE.UPDATE)
+    return res;
   }
 
   @Delete("/:id")
@@ -107,7 +115,25 @@ export class NotesController {
     @Request() req
   ) {
     const note = await this.notesService.deleteNote(id, req.user.id);
-    return note ? note : new BadRequestException("Not Found")
+    const res = note ? note as Notes : new BadRequestException("Not Found")
+    if (res && note.id && note.user) {
+      this.refreshAllDevices();
+      this.refreshSpecificDevice(note.id, ACTION_TYPE.DELETE)
+    }
+    return res;
 
+  }
+
+  private refreshAllDevices() {
+    const data = new SendNotifiationDTO();
+    data.message = ACTION_TYPE.REFRESH
+    this.mqttService.sendRefreshToAllDevices(data);
+  }
+
+  private refreshSpecificDevice(noteId: string, message: ACTION_TYPE) {
+    console.log("NoteID: ", noteId);
+    const data = new SendNotifiationDTO();
+    data.message = message
+    this.mqttService.sendRefreshToSpecificTopic(data, noteId);
   }
 }
