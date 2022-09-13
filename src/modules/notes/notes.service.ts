@@ -42,7 +42,9 @@ export class NotesService {
     return Notes.find({
       join: {
         alias: "notes",
-        leftJoinAndSelect: buildLeftJoinsConfig(Notes, "notes", {}),
+        leftJoinAndSelect: buildLeftJoinsConfig(Notes, "notes", {
+          user: {},
+        }),
       },
       where: {
         user: { id: userId },
