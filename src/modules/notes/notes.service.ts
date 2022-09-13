@@ -51,7 +51,7 @@ export class NotesService {
   }
 
   async getAllNotes(): Promise<Notes[] | undefined> {
-    return Notes.find();
+    return Notes.find({ relations: ["user"] });
   }
 
   async updateNote(noteId: string, updateDto: UpdateNoteDto, userId) {
